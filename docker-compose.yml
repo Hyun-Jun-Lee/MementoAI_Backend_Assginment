@@ -1,0 +1,40 @@
+version: '3'
+services:
+  backends:
+    container_name: backends
+    build:
+      context: .
+    ports:
+      - 8000:8000
+    volumes:
+      - ./app:/app
+      - ./requirements:/requirements
+    environment:
+      - TZ=Asia/Seoul
+    env_file:
+      - ".env"
+    depends_on:
+      - maindb
+    command: >
+      /bin/bash -c "python -m uvicorn main:app --host 0.0.0.0 --port 8000 --reload"
+
+
+  maindb:
+    container_name: maindb
+    image: postgres:13
+    restart: on-failure
+    volumes:
+      - app-data:/var/lib/mysql
+    env_file:
+      - ".env"
+    environment:
+      - TZ=Asia/Seoul
+      - POSTGRES_PASSWORD=${DB_PW}
+      - POSTGRES_USER=${DB_USER}
+      - POSTGRES_DB=${DB_NAME}
+    ports:
+      - "3306:3306"
+
+
+volumes:
+  app-data:
