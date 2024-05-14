@@ -12,6 +12,7 @@ typing = "*"
 pytest = "*"
 pydantic-settings = "*"
 pydantic = "*"
+psycopg2 = "*"
 
 [dev-packages]
 
