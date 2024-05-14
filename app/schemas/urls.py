@@ -7,7 +7,7 @@ from .base import CoreSchema
 
 class UrlMappingBase(CoreSchema):
     origin_url: HttpUrl
-    short_url: str
+    shorten_key: str
     expire_date: Optional[date] = None
     view_count: Optional[int] = 0
 
