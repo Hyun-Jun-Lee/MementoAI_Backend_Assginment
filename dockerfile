@@ -7,12 +7,11 @@ ENV DEBIAN_FRONTEND=noninteractive
 ENV PYTHONPATH /app:$PYTHONPATH
 
 COPY ./app /app
-COPY ./requirements /requirements
 
 WORKDIR /app
 
 # Install dependencies
 RUN apt-get update -y && \
     pip install --upgrade pip && \
-    pip install -r /requirements/requirements.txt && \
+    pip install -r requirements.txt && \
     apt-get clean -y
