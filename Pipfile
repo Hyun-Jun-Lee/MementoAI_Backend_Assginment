@@ -12,7 +12,9 @@ typing = "*"
 pytest = "*"
 pydantic-settings = "*"
 pydantic = "*"
-psycopg2 = "*"
+psycopg2-binary = "*"
+sqlalchemy-utils = "*"
+httpx = "==0.26.0"
 
 [dev-packages]
 
