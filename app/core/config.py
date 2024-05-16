@@ -9,6 +9,7 @@ class Setting(BaseSettings):
     DB_USER: str
     DB_PORT: int
     DB_PW: str
+    TEST_DB: str
 
     PJ_TITLE: str
 
