@@ -6,7 +6,7 @@ from alembic import context
 
 from db.base import ModelBase
 from db.session import DATABASE_URL
-from models.urls import URLMapping
+from models.mapping_models import URLMapping
 
 # this is the Alembic Config object, which provides
 # access to the values within the .ini file in use.

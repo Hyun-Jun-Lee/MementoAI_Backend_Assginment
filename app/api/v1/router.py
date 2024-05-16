@@ -1,7 +1,7 @@
 from fastapi import APIRouter
 
-from .short_urls import router as short_router
+from .url_mapping import router as mapping_router
 
 v1_router = APIRouter()
 
-v1_router.include_router(short_router, tags=["shorter"])
+v1_router.include_router(mapping_router, tags=["shorter"])
