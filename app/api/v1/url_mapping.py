@@ -1,4 +1,4 @@
-from fastapi import APIRouter, Depends, HTTPException
+from fastapi import APIRouter, Depends, HTTPException, status
 from fastapi.responses import RedirectResponse, Response
 from sqlalchemy.orm import Session
 from typing import List
@@ -37,7 +37,7 @@ def update_mapping(
         - update_in : 업데이트할 정보를 담고 있는 Pydantic 모델(expire_date)
 
     - Raises:
-        - HTTPException: 단축 Key에 해당하는 URL이 없을 경우 404 에러 반환
+        - 단축 Key에 해당하는 URL이 없을 경우 404 에러 반환
 
     - Returns:
         - UrlMappingResponse: 원본 URL, 단축 Key, 만료 날짜, 조회수를 포함하는 응답 모델
@@ -46,7 +46,9 @@ def update_mapping(
     check_url_mapping = mapping_selector.get_url_by_key(db=db, key=shorten_key)
 
     if not check_url_mapping:
-        raise HTTPException(status_code=404, detail="URL Not Found")
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND, detail="URL Not Found"
+        )
 
     updated_url_mapping = mapping_service.update(
         db=db, db_obj=check_url_mapping, obj_in=update_in
@@ -77,21 +79,23 @@ def create_short_key(url_in: UrlMappingCreate, db: Session = Depends(get_db)):
 def get_origin_url(shorten_key: str, db: Session = Depends(get_db)):
     """
     단축 Key를 받아서 원본 URL로 리다이렉트
+    해당 UrlMapping 객체 조회수 증가
 
     - Parameters:
         - shorten_key : 단축 Key
 
     - Raises:
-        - HTTPException: 단축 Key에 해당하는 URL이 없을 경우 404
-        - HTTPException: URL이 만료된 경우 404
+        - 단축 Key에 해당하는 URL이 없을 경우 404
+        - 유효기간이 만료된 경우 404
 
     - Returns:
         - UrlMappingResponse: 원본 URL, 단축 Key, 만료 날짜, 조회수를 포함하는 응답 모델
     """
     check_url_mapping = mapping_selector.get_url_by_key(db=db, key=shorten_key)
-
     if not check_url_mapping:
-        raise HTTPException(status_code=404, detail="URL Not Found")
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND, detail="URL Not Found"
+        )
 
     try:
         url_mapping = mapping_selector.get_url_mapping(
@@ -100,11 +104,15 @@ def get_origin_url(shorten_key: str, db: Session = Depends(get_db)):
         mapping_service.increase_view_count(db=db, url_mapping=url_mapping)
     except ExpiredException:
         mapping_service.delete(db=db, id=check_url_mapping.id)
-        raise HTTPException(status_code=404, detail="URL has expired")
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND, detail="URL has expired"
+        )
 
     headers = {"Cache-Control": "no-cache, no-store, pragma: no-cache"}
     return RedirectResponse(
-        url=url_mapping.origin_url, headers=headers, status_code=301
+        url=url_mapping.origin_url,
+        headers=headers,
+        status_code=status.HTTP_301_MOVED_PERMANENTLY,
     )
 
 
@@ -117,7 +125,7 @@ def get_view_count(shorten_key: str, db: Session = Depends(get_db)):
         - shorten_key : 단축 Key
 
     - Raises:
-        - HTTPException: 단축 Key에 해당하는 URL이 없을 경우 404 에러 반환
+        - 단축 Key에 해당하는 URL이 없을 경우 404 에러 반환
 
     - Returns:
         - UrlMappingResponse: 원본 URL, 단축 URL, 만료 날짜, 조회수를 포함하는 응답 모델
@@ -126,6 +134,8 @@ def get_view_count(shorten_key: str, db: Session = Depends(get_db)):
     url_mapping = mapping_selector.get_url_by_key(db=db, key=shorten_key)
 
     if not url_mapping:
-        raise HTTPException(status_code=404, detail="URL Not Found")
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND, detail="URL Not Found"
+        )
 
     return url_mapping
