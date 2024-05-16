@@ -122,21 +122,29 @@ expire_date 수정
 
 1. Clone the git repo
 
-    `https://github.com/Hyun-Jun-Lee/MementoAI_Backend_Assginment.git`
+    ```
+    git clone https://github.com/Hyun-Jun-Lee/MementoAI_Backend_Assginment.git
+    ```
 
 2. `.env` 생성 (env.sample 참고)
 
 3. docker container 실행
 
-    `docker compose up`
+    ```
+    docker compose up
+    ```
 
 4. Alembic Migrations
 
-    `docker compose run backends alembic upgrade head`
+    ```
+    docker compose run backends alembic upgrade head
+    ```
 
 ## Test
 
-`docker compose run pytest`
+```
+docker compose run pytest
+```
 
 ## Swagger
 
