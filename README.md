@@ -142,4 +142,4 @@ expire_date 수정
 
 "http://0.0.0.0:8000/docs"
 
-![alt text](image.png)
+![image](https://github.com/Hyun-Jun-Lee/MementoAI_Backend_Assginment/assets/76996686/a4a561f4-72af-4adb-9de9-4cac34b8f323)
