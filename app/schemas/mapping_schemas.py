@@ -17,5 +17,9 @@ class UrlMappingCreate(BaseModel):
     expire_date: Optional[date] = None
 
 
+class UrlMappingUpdate(BaseModel):
+    expire_date: Optional[date] = None
+
+
 class UrlMappingResponse(UrlMappingBase):
     pass
