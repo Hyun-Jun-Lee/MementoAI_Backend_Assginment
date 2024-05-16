@@ -23,7 +23,7 @@ services:
     image: postgres:13
     restart: on-failure
     volumes:
-      - app-data:/var/lib/mysql
+      - app-data:/var/lib/postgresql/data
     env_file:
       - ".env"
     environment:
