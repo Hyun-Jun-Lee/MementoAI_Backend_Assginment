@@ -20,7 +20,4 @@ def get_url_mapping(db: Session, url_mapping: mapping_models.URLMapping):
         db.commit()
         raise ExpiredException
 
-    url_mapping.view_count += 1
-    db.commit()
-
     return url_mapping

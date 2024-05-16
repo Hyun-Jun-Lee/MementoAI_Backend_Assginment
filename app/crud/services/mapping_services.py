@@ -37,3 +37,11 @@ def create_mapping(db: Session, origin_url: str, expire_date: date = None):
     db.add(url_mapping)
     db.commit()
     return url_mapping
+
+
+def increase_view_count(db: Session, url_mapping: mapping_models.URLMapping):
+    url_mapping.view_count += 1
+    db.commit()
+    db.refresh(url_mapping)
+
+    return url_mapping

@@ -44,11 +44,11 @@ def get_origin_url(shorten_key: str, db=Depends(get_db)):
 
     if not check_url_mapping:
         raise HTTPException(status_code=404, detail="URL Not Found")
-
     try:
         url_mapping = mapping_selectors.get_url_mapping(
             db=db, url_mapping=check_url_mapping
         )
+        mapping_services.increase_view_count(db=db, url_mapping=url_mapping)
     except ExpiredException:
         raise HTTPException(status_code=404, detail="URL has expired")
 
