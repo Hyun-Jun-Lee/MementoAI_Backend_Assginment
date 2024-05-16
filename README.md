@@ -124,7 +124,9 @@ expire_date 수정
 
     ```
     git clone https://github.com/Hyun-Jun-Lee/MementoAI_Backend_Assginment.git
+    ```
     
+    ```
     cd MementoAI_Backend_Assginment.git
     ```
 
