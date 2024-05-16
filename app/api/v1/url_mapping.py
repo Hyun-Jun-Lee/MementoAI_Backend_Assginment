@@ -17,6 +17,9 @@ router = APIRouter()
 
 @router.get("/shortens", response_model=List[UrlMappingResponse])
 def get_all_mappings(db: Session = Depends(get_db)):
+    """
+    모든 Url Mapping 객체 확인
+    """
     url_mappings = mapping_selector.get_multi(db=db)
 
     return url_mappings
@@ -26,6 +29,20 @@ def get_all_mappings(db: Session = Depends(get_db)):
 def update_mapping(
     shorten_key: str, update_in: UrlMappingUpdate, db: Session = Depends(get_db)
 ):
+    """
+    주어진 shorten_key에 해당하는 URL 매핑의 만료일을 업데이트
+
+    - Parameters:
+        - shorten_key (str): 업데이트하고자 하는 URL 매핑의 shorten_key.
+        - update_in : 업데이트할 정보를 담고 있는 Pydantic 모델(expire_date)
+
+    - Raises:
+        - HTTPException: 단축 Key에 해당하는 URL이 없을 경우 404 에러 반환
+
+    - Returns:
+        - UrlMappingResponse: 원본 URL, 단축 Key, 만료 날짜, 조회수를 포함하는 응답 모델
+    """
+
     check_url_mapping = mapping_selector.get_url_by_key(db=db, key=shorten_key)
 
     if not check_url_mapping:
@@ -41,7 +58,7 @@ def update_mapping(
 @router.post("/shorten", response_model=UrlMappingResponse)
 def create_short_key(url_in: UrlMappingCreate, db: Session = Depends(get_db)):
     """
-    원본 URL 받아서 단축 Key를 반환
+    원본 URL 받아서 UrlMapping 객체 생성 및 단축 Key를 반환
 
     - Parameters:
         - url_in : 원본 URL 및 만료 기간
@@ -63,6 +80,10 @@ def get_origin_url(shorten_key: str, db: Session = Depends(get_db)):
 
     - Parameters:
         - shorten_key : 단축 Key
+
+    - Raises:
+        - HTTPException: 단축 Key에 해당하는 URL이 없을 경우 404
+        - HTTPException: URL이 만료된 경우 404
 
     - Returns:
         - UrlMappingResponse: 원본 URL, 단축 Key, 만료 날짜, 조회수를 포함하는 응답 모델
@@ -94,6 +115,9 @@ def get_view_count(shorten_key: str, db: Session = Depends(get_db)):
 
     - Parameters:
         - shorten_key : 단축 Key
+
+    - Raises:
+        - HTTPException: 단축 Key에 해당하는 URL이 없을 경우 404 에러 반환
 
     - Returns:
         - UrlMappingResponse: 원본 URL, 단축 URL, 만료 날짜, 조회수를 포함하는 응답 모델
